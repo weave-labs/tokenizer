@@ -2,6 +2,7 @@ package huggingface
 
 import (
 	"errors"
+	"fmt"
 	"path/filepath"
 
 	"github.com/daulet/tokenizers"
@@ -28,7 +29,13 @@ const (
 )
 
 func NewHuggingfaceHandler(modelName string) (*Handler, error) {
-	modelPath := filepath.Join(modelDefinitionPath, modelName+modelDefinitionExtension)
+	absolutePath, err := filepath.Abs(modelDefinitionPath)
+	if err != nil {
+		fmt.Println("Error resolving path:", err)
+		return nil, err
+	}
+
+	modelPath := filepath.Join(absolutePath, modelName+modelDefinitionExtension)
 
 	tokenizer, err := tokenizers.FromFile(modelPath)
 	if err == nil {
