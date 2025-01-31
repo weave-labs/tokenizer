@@ -18,7 +18,7 @@ type Model string
 
 const (
 	modelDefinitionExtension = ".json"
-	modelDefinitionPath      = "./models"
+	modelDefinitionPath      = "./handler/huggingface/models"
 
 	Llama318B       Model = "Llama-3.1-8B"
 	Llama321B       Model = "Llama-3.2-1B"
