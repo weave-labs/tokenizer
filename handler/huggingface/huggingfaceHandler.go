@@ -5,13 +5,14 @@ import (
 	"path/filepath"
 
 	"github.com/daulet/tokenizers"
+	_ "github.com/weave-labs/tokenizer/handler/huggingface/wrappers"
 )
 
 type Handler struct {
 	Tokenizer *tokenizers.Tokenizer
 }
 
-var ErrModelNotFound = errors.New("Huggingface model not found, or the model you gave is not supported")
+var ErrModelNotFound = errors.New("huggingface model not found, or the model you gave is not supported")
 
 type Model string
 
