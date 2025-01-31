@@ -3,9 +3,9 @@ package huggingface
 import (
 	"errors"
 	"fmt"
-	"path/filepath"
 
 	"github.com/daulet/tokenizers"
+	"github.com/weave-labs/tokenizer/handler/huggingface/model"
 	_ "github.com/weave-labs/tokenizer/handler/huggingface/wrappers"
 )
 
@@ -29,15 +29,13 @@ const (
 )
 
 func NewHuggingfaceHandler(modelName string) (*Handler, error) {
-	absolutePath, err := filepath.Abs(modelDefinitionPath)
+	modelData, err := modelDataFromString(modelName)
 	if err != nil {
 		fmt.Println("Error resolving path:", err)
 		return nil, err
 	}
 
-	modelPath := filepath.Join(absolutePath, modelName+modelDefinitionExtension)
-
-	tokenizer, err := tokenizers.FromFile(modelPath)
+	tokenizer, err := tokenizers.FromBytes(modelData)
 	if err == nil {
 		return nil, err
 	}
@@ -94,6 +92,22 @@ func modelFromString(modelStr string) (Model, error) {
 	}
 
 	return "", ErrModelNotFound
+}
+
+func modelDataFromString(modelStr string) ([]byte, error) {
+	modelMap := map[string]string{
+		"Llama-3.1-8B":                    model.Llama318BTokenizerData,
+		"Llama-3.2-1B":                    model.Llama321BTokenizerData,
+		"Llama-3.2-3B":                    model.Llama323BTokenizerData,
+		"Ministral-8B-Instruct-2410":      model.Ministral8BTokenizerData,
+		"Mistral-Small-24B-Instruct-2501": model.MistralSmall24BTokenizerData,
+	}
+
+	if modelData, exists := modelMap[modelStr]; exists {
+		return []byte(modelData), nil
+	}
+
+	return []byte{}, ErrModelNotFound
 }
 
 func convertUint32ToUint(input []uint32) []uint {
