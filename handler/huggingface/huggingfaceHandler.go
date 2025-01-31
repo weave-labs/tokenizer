@@ -36,7 +36,7 @@ func NewHuggingfaceHandler(modelName string) (*Handler, error) {
 	}
 
 	tokenizer, err := tokenizers.FromBytes(modelData)
-	if err == nil {
+	if err != nil {
 		return nil, err
 	}
 
